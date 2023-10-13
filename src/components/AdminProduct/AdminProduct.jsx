@@ -309,7 +309,7 @@ const AdminProduct = () => {
 
         },
       ];
-      console.log('product',products?.data);
+      
       const dataTable = products?.data?.length && products?.data?.map((product)=>{
        
         return{ ...product,key : product._id,

@@ -1,5 +1,5 @@
 import { Button, Form, Space } from 'antd'
-import React from 'react'
+import React, { useState } from 'react'
 import { WrapperHeader, WrapperHeaderItem, WrapperUploadFile } from './style'
 import TableComponent from '../TableComponent/TableComponent'
 import InputComponent from '../InputComponent/InputComponent'
@@ -29,6 +29,8 @@ const AdminOrder = () => {
 
   const queryOrder = useQuery({ queryKey: ['orders'], queryFn: getAllOrder })
   const { isLoading: isLoadingOrders, data: orders } = queryOrder
+  const totalOrder = orders?.data?.length;
+ 
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -151,7 +153,7 @@ const AdminOrder = () => {
       ...getColumnSearchProps('totalPrice')
     }
   ];
-
+  
   const dataTable = orders?.data?.length && orders?.data?.map((order) => {
   
     return { ...order, 
@@ -186,11 +188,28 @@ const AdminOrder = () => {
       totalPrice: convertPrice(order?.totalPrice)}
   })
 
+  /////
+  let sum = 0;
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  useEffect(() => {
+    const doanhthus = orders?.data?.map((total, order) => total.totalPrice );
+   
+    const sum = doanhthus?.reduce((total, current) => total + current, 0);
+    
+    setTotalRevenue(sum);
+  }, [orders]);
   return (
     <div>
       <WrapperHeader>Quản lý đơn hàng</WrapperHeader>
-      <div style={{height: 200, width:200}}>
-        <PieChartComponent data={orders?.data} />
+      <div style={{display:'flex'}}>   
+        <div style={{height: 200, width:200}}>
+          <PieChartComponent data={orders?.data} />
+        </div>
+        <div style={{marginLeft:'10px'}}>
+            <h3>Tổng số doanh thu :{ convertPrice(totalRevenue)} </h3>
+            <h3>Tổng số đơn hàng :{totalOrder } </h3>
+
+        </div>
       </div>
       <div style={{ marginTop: '20px' }}>
      
